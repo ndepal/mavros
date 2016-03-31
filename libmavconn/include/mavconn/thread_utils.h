@@ -37,6 +37,13 @@ namespace mavutils {
  */
 inline bool set_thread_name(std::thread &thd, const char *name, ...)
 {
+   // On OSX a threads name can only be set from within the thread.
+   // Disable thread names on osx as they are not essential.
+   // See: http://stackoverflow.com/a/7989973
+#ifdef __APPLE__
+       return true;
+#else
+
 	pthread_t pth = thd.native_handle();
 	va_list arg_list;
 	va_start(arg_list, name);
@@ -45,6 +52,7 @@ inline bool set_thread_name(std::thread &thd, const char *name, ...)
 	vsnprintf(new_name, sizeof(new_name), name, arg_list);
 	va_end(arg_list);
 	return pthread_setname_np(pth, new_name) == 0;
+#endif
 }
 
 /**
