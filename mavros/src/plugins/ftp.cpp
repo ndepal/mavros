@@ -37,6 +37,16 @@
 // enable debugging messages
 //#define FTP_LL_DEBUG
 
+// errno.h differs across *nix systems
+// http://www.ioplex.com/~miallen/errcmp.html
+// Undefined ones to similar codes on OSX
+#ifdef __APPLE__
+       #define EBADRQC EINVAL
+       #define EBADFD EBADF
+       #define EBADE EINVAL
+       #define EBADSLT EINVAL
+#endif
+
 namespace mavplugin {
 /**
  * @brief FTP Request message abstraction class
